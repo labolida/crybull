@@ -27,7 +27,7 @@ int main( int argc , char ** argv ) {
 		printf("	crybull DECODE MySecretPassword  encryptedMessage.txt  secretMessage.txt	\n\n" ) ;
 	}else{
 		char * action   = argv[1];		// STDIN.PARAM: ACTION ENCODE DECODE
-		char * pwd	  = argv[2];		// STDIN.PARAM: PASSWORD
+		char * pwd	  	= argv[2];		// STDIN.PARAM: PASSWORD
 		char * fn_in	= argv[3];		// STDIN.PARAM: INPUT-FILENAME
 		char * fn_out   = argv[4];		// STDIN.PARAM: OUTPUT-FILENAME
 		FILE * fp1 ;					// FILE POINTER IN
@@ -43,11 +43,13 @@ int main( int argc , char ** argv ) {
 			int p = pwd[ ( s % strlen(pwd) ) ];
 			if (strcmp(argv[1],"ENCODE")==0) {
 				r = (r^p)+p ;
-				r = shiftBitLeft(r);
+				if ( p&1  ) r = shiftBitLeft(r);
+				if ( p&32 ) r = shiftBitLeft(r);
 				fputc( r , fp2 );
 			}
 			if (strcmp(argv[1],"DECODE")==0) {
-				r = shiftBitRight(r);
+				if ( p&32 ) r = shiftBitRight(r);
+				if ( p&1  ) r = shiftBitRight(r);
 				r = (r-p)^p ;
 				fputc( r , fp2 );
 			}
